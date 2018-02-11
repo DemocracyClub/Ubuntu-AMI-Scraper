@@ -1,2 +1,5 @@
+__pycache__/
+*.pyc
+
 # Ignore output of scraper
 data.sqlite
