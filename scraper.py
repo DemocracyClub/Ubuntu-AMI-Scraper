@@ -2,6 +2,7 @@ import json
 import lxml.html
 import os
 import requests
+from github import open_pull_request
 from polling_bot.brain import SlackClient
 
 
@@ -12,11 +13,17 @@ import scraperwiki
 
 
 SEND_NOTIFICATIONS = True
+OPEN_PULL_REQUESTS = True
 
 try:
     SLACK_WEBHOOK_URL = os.environ['MORPH_UBUNTU_BOT_SLACK_WEBHOOK_URL']
 except KeyError:
     SLACK_WEBHOOK_URL = None
+
+try:
+    GITHUB_API_KEY = os.environ['MORPH_GITHUB_API_KEY']
+except KeyError:
+    GITHUB_API_KEY = None
 
 
 def post_slack_message(release):
@@ -72,9 +79,11 @@ def scrape():
             exists = scraperwiki.sql.select(
                 "* FROM 'data' WHERE ami_id=?", record['ami_id'])
             if len(exists) == 0:
+                print(record)
                 if SLACK_WEBHOOK_URL and SEND_NOTIFICATIONS:
-                    print(record)
                     post_slack_message(record)
+                if GITHUB_API_KEY and OPEN_PULL_REQUESTS and record['zone'] == 'eu-west-1':
+                    open_pull_request(record)
 
             scraperwiki.sqlite.save(
                 unique_keys=['ami_id'], data=record, table_name='data')
