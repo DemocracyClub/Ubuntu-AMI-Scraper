@@ -99,7 +99,7 @@ def open_pull_request(repo, release):
     c = CommitHelper(get_github_credentials(repo, newbranch))
     c.push_file(json.dumps(packer_vars, indent=2), filename, commit_message)
 
-    body = "Found new Ubuntu {version} ({instance_type}) image in {zone}: `{ami_id}`".format(
+    body = "Found new Ubuntu {version} ({instance_type}) image in {zone}: `{ami_id}` :penguin:".format(
         version=release['version'],
         instance_type=release['instance_type'],
         zone=release['zone'],
