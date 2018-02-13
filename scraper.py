@@ -26,6 +26,18 @@ except KeyError:
     GITHUB_API_KEY = None
 
 
+repos = {
+    'eu-west-1': [
+        'DemocracyClub/polling_deploy',
+    ],
+    'eu-west-2': [
+        'DemocracyClub/ee_deploy',
+        #'DemocracyClub/who_deploy',
+    ],
+}
+zones = list(repos.keys())
+
+
 def post_slack_message(release):
     message = "Found new Ubuntu {version} ({instance_type}) image in {zone}: `{ami_id}`".format(
         version=release['version'],
@@ -72,7 +84,7 @@ def scrape():
             'date': row[5],
             'ami_id': link.text,
         }
-        if record['zone'] in ['eu-west-1', 'eu-west-2'] and\
+        if record['zone'] in zones and\
                 record['version'] == '16.04 LTS' and\
                 record['instance_type'] == 'hvm:ebs-ssd':
 
@@ -82,8 +94,10 @@ def scrape():
                 print(record)
                 if SLACK_WEBHOOK_URL and SEND_NOTIFICATIONS:
                     post_slack_message(record)
-                if GITHUB_API_KEY and OPEN_PULL_REQUESTS and record['zone'] == 'eu-west-1':
-                    open_pull_request(record)
+                if GITHUB_API_KEY and OPEN_PULL_REQUESTS and record['zone'] in repos:
+                    zone_repos = repos[record['zone']]
+                    for repo in zone_repos:
+                        open_pull_request(repo, record)
 
             scraperwiki.sqlite.save(
                 unique_keys=['ami_id'], data=record, table_name='data')

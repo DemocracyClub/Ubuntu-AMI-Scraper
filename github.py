@@ -6,12 +6,9 @@ from commitment import GitHubCredentials
 from commitment import GitHubClient as CommitHelper
 
 
-GITHUB_REPO = 'DemocracyClub/polling_deploy'
-
-
-def get_github_credentials(branch):
+def get_github_credentials(repo, branch):
     return GitHubCredentials(
-        repo=GITHUB_REPO,
+        repo=repo,
         branch=branch,
         name=os.environ['MORPH_GITHUB_USERNAME'],
         email=os.environ['MORPH_GITHUB_EMAIL'],
@@ -88,18 +85,18 @@ def get_json(repo, branch, filename):
     return json.loads(r.text, object_pairs_hook=OrderedDict)
 
 
-def open_pull_request(release):
+def open_pull_request(repo, release):
     newbranch = release['ami_id']
     commit_message = 'Update ubuntu_ami_id to %s' % (release['ami_id'])
 
-    pr = PullRequestHelper(get_github_credentials('master'))
+    pr = PullRequestHelper(get_github_credentials(repo, 'master'))
     pr.create_branch(newbranch)
 
     filename = 'packer-vars.json'
-    packer_vars = get_json(GITHUB_REPO, newbranch, filename)
+    packer_vars = get_json(repo, newbranch, filename)
     packer_vars['ubuntu_ami_id'] = release['ami_id']
 
-    c = CommitHelper(get_github_credentials(newbranch))
+    c = CommitHelper(get_github_credentials(repo, newbranch))
     c.push_file(json.dumps(packer_vars, indent=2), filename, commit_message)
 
     body = "Found new Ubuntu {version} ({instance_type}) image in {zone}: `{ami_id}`".format(
