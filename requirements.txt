@@ -1,4 +1,4 @@
-commitment
+commitment==1.0.0
 lxml==3.6.4
 requests==2.13.0
 scraperwiki==0.5.1
