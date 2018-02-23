@@ -1,3 +1,4 @@
+import os
 import json
 from collections import OrderedDict
 from commitment import GitHubCredentials, GitHubClient
