@@ -32,7 +32,7 @@ repos = {
     ],
     'eu-west-2': [
         'DemocracyClub/ee_deploy',
-        #'DemocracyClub/who_deploy',
+        'DemocracyClub/who_deploy',
     ],
 }
 zones = list(repos.keys())
