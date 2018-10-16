@@ -1,4 +1,4 @@
-import json
+import json5
 import lxml.html
 import os
 import requests
@@ -69,11 +69,7 @@ def scrape():
     if res.status_code != 200:
         res.raise_for_status()
     js = res.text
-
-    # /releasesTable serves up js, not json
-    # this hack strips the last trailing comma so it will parse as json
-    # but it is probably going to break at some point
-    data = json.loads(js[:-6] + ']}')
+    data = json5.loads(js)
 
     for row in data['aaData']:
         link = lxml.html.fromstring(row[6])
