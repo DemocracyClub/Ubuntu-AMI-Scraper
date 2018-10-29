@@ -1,6 +1,6 @@
-commitment==2.0.0
+commitment>=2,<3
 json5
-lxml==3.6.4
-requests==2.13.0
+lxml>=4.2,<5
+requests>=2.20.0,<3
 scraperwiki==0.5.1
 git+https://github.com/polling-bot-4000/polling-bot.git
