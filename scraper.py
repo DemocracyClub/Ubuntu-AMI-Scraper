@@ -30,17 +30,20 @@ REPOS = {
     'DemocracyClub/polling_deploy': {
         'zone': 'eu-west-1',
         'version': '16.04 LTS',
-        'instance_type': 'hvm:ebs-ssd'
+        'instance_type': 'hvm:ebs-ssd',
+        'cpu_arch': 'amd64',
     },
     'DemocracyClub/ee_deploy': {
         'zone': 'eu-west-2',
         'version': '18.04 LTS',
-        'instance_type': 'hvm:ebs-ssd'
+        'instance_type': 'hvm:ebs-ssd',
+        'cpu_arch': 'amd64',
     },
     'DemocracyClub/who_deploy': {
         'zone': 'eu-west-2',
         'version': '16.04 LTS',
-        'instance_type': 'hvm:ebs-ssd'
+        'instance_type': 'hvm:ebs-ssd',
+        'cpu_arch': 'amd64',
     },
 }
 
@@ -63,6 +66,7 @@ def init():
             date TEXT,
             zone TEXT,
             ami_id TEXT,
+            cpu_arch TEXT,
             instance_type TEXT);
     """)
     scraperwiki.sql.execute("""
@@ -78,6 +82,7 @@ def get_repos_for_image(image):
             image['zone'] == platform['zone']
             and image['version'] == platform['version']
             and image['instance_type'] == platform['instance_type']
+            and image['cpu_arch'] == platform['cpu_arch']
         ):
             repos.append(repo)
     return repos
@@ -97,6 +102,7 @@ def scrape():
             'version': row[2],
             'instance_type': row[4],
             'date': row[5],
+            'cpu_arch': row[3],
             'ami_id': link.text,
         }
         repos = get_repos_for_image(record)
