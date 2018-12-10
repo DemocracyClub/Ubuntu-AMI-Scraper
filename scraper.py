@@ -34,7 +34,7 @@ REPOS = {
     },
     'DemocracyClub/ee_deploy': {
         'zone': 'eu-west-2',
-        'version': '16.04 LTS',
+        'version': '18.04 LTS',
         'instance_type': 'hvm:ebs-ssd'
     },
     'DemocracyClub/who_deploy': {
