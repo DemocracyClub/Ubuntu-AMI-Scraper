@@ -26,16 +26,23 @@ except KeyError:
     GITHUB_API_KEY = None
 
 
-repos = {
-    'eu-west-1': [
-        'DemocracyClub/polling_deploy',
-    ],
-    'eu-west-2': [
-        'DemocracyClub/ee_deploy',
-        'DemocracyClub/who_deploy',
-    ],
+REPOS = {
+    'DemocracyClub/polling_deploy': {
+        'zone': 'eu-west-1',
+        'version': '16.04 LTS',
+        'instance_type': 'hvm:ebs-ssd'
+    },
+    'DemocracyClub/ee_deploy': {
+        'zone': 'eu-west-2',
+        'version': '16.04 LTS',
+        'instance_type': 'hvm:ebs-ssd'
+    },
+    'DemocracyClub/who_deploy': {
+        'zone': 'eu-west-2',
+        'version': '16.04 LTS',
+        'instance_type': 'hvm:ebs-ssd'
+    },
 }
-zones = list(repos.keys())
 
 
 def post_slack_message(release):
@@ -64,6 +71,18 @@ def init():
     """)
 
 
+def get_repos_for_image(image):
+    repos = []
+    for repo, platform in REPOS.items():
+        if (
+            image['zone'] == platform['zone']
+            and image['version'] == platform['version']
+            and image['instance_type'] == platform['instance_type']
+        ):
+            repos.append(repo)
+    return repos
+
+
 def scrape():
     res = requests.get('https://cloud-images.ubuntu.com/locator/ec2/releasesTable')
     if res.status_code != 200:
@@ -80,19 +99,17 @@ def scrape():
             'date': row[5],
             'ami_id': link.text,
         }
-        if record['zone'] in zones and\
-                record['version'] == '16.04 LTS' and\
-                record['instance_type'] == 'hvm:ebs-ssd':
+        repos = get_repos_for_image(record)
 
+        if repos:
             exists = scraperwiki.sql.select(
                 "* FROM 'data' WHERE ami_id=?", record['ami_id'])
             if len(exists) == 0:
                 print(record)
                 if SLACK_WEBHOOK_URL and SEND_NOTIFICATIONS:
                     post_slack_message(record)
-                if GITHUB_API_KEY and OPEN_PULL_REQUESTS and record['zone'] in repos:
-                    zone_repos = repos[record['zone']]
-                    for repo in zone_repos:
+                if GITHUB_API_KEY and OPEN_PULL_REQUESTS:
+                    for repo in repos:
                         open_pull_request(repo, record)
 
             scraperwiki.sqlite.save(
