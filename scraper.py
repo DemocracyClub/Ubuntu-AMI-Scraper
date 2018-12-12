@@ -29,7 +29,7 @@ except KeyError:
 REPOS = {
     'DemocracyClub/polling_deploy': {
         'zone': 'eu-west-1',
-        'version': '16.04 LTS',
+        'version': '18.04 LTS',
         'instance_type': 'hvm:ebs-ssd',
         'cpu_arch': 'amd64',
     },
