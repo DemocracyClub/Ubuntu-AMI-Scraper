@@ -13,7 +13,7 @@ import scraperwiki
 
 
 SEND_NOTIFICATIONS = True
-OPEN_PULL_REQUESTS = False
+OPEN_PULL_REQUESTS = True
 
 try:
     SLACK_WEBHOOK_URL = os.environ['MORPH_UBUNTU_BOT_SLACK_WEBHOOK_URL']
