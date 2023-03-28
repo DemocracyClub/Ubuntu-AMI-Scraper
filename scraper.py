@@ -29,19 +29,19 @@ except KeyError:
 REPOS = {
     'DemocracyClub/polling_deploy': {
         'zone': 'eu-west-1',
-        'version': '18.04 LTS',
+        'version': '22.04 LTS',
         'instance_type': 'hvm:ebs-ssd',
         'cpu_arch': 'amd64',
     },
     'DemocracyClub/ee_deploy': {
         'zone': 'eu-west-2',
-        'version': '18.04 LTS',
+        'version': '22.04 LTS',
         'instance_type': 'hvm:ebs-ssd',
         'cpu_arch': 'amd64',
     },
     'DemocracyClub/who_deploy': {
         'zone': 'eu-west-2',
-        'version': '18.04 LTS',
+        'version': '22.04 LTS',
         'instance_type': 'hvm:ebs-ssd',
         'cpu_arch': 'amd64',
     },
